@@ -1,0 +1,161 @@
+{% assign article = article | default: section.settings.article %}
+
+<article>
+  <!-- Hero Section with Background Image -->
+  <div class="relative w-full h-[75vh]">
+    <div class="absolute inset-0">
+      {{ article.image | image_url: width: 2000 | image_tag:
+        class: "w-full h-full object-cover",
+        loading: "eager"
+      }}
+      <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-white"></div>
+    </div>
+  </div>
+
+  <!-- Content Container -->
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-96 relative">
+    <div class="bg-white rounded-xl shadow-xl p-8 mb-8">
+      <!-- Header -->
+      <header class="text-center mb-12">
+        <div class="text-purple-600 font-medium mb-2">{{ article.tags.first | upcase }}</div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+          {{ article.title }}
+        </h1>
+        <p class="text-xl text-gray-600 mb-6">
+          {{ article.metafields.blog.excerpt }}
+        </p>
+        <div class="flex items-center justify-center space-x-4 text-sm text-gray-500">
+          <span class="flex items-center">
+            {% render 'icon-clock' %}
+            <span class="ml-1">{{ article.metafields.blog.read_time }}</span>
+          </span>
+          <span>|</span>
+          <span>{{ article.metafields.blog.word_count }} words</span>
+        </div>
+      </header>
+
+      <!-- Featured Image -->
+      <div class="mb-12 rounded-xl overflow-hidden shadow-2xl max-w-3xl mx-auto">
+        {{ article.image | image_url: width: 1200 | image_tag:
+          class: "w-full h-[400px] object-cover",
+          alt: article.title
+        }}
+      </div>
+
+      <!-- Content -->
+      <div class="prose prose-lg max-w-none">
+        {{ article.content }}
+
+        {% if article.template_suffix == 'foam-cannon-review' %}
+          {% render 'blog-poll' %}
+          
+          <div class="mt-12 mb-2">
+            <h2 class="text-2xl font-bold text-purple-800 mb-2">What Makes a Foam Cannon Truly Great?</h2>
+            <p class="text-sm text-purple-600 font-medium">It's More Than Just Bubbles</p>
+          </div>
+          
+          {% render 'blog-comparison-table' %}
+          
+          {% render 'blog-product-comparison' %}
+        {% endif %}
+
+        <!-- Author Bio -->
+        <div class="mt-16 pt-8 border-t border-gray-200">
+          <div class="flex items-center space-x-4">
+            {% if article.user.image %}
+              {{ article.user.image | image_url: width: 48 | image_tag:
+                class: "h-12 w-12 rounded-full",
+                alt: article.user.first_name
+              }}
+            {% endif %}
+            <div>
+              <div class="font-medium text-gray-900">{{ article.user.first_name }} {{ article.user.last_name }}</div>
+              <div class="text-gray-500">Professional Detailer & Founder of That Detail Shop</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<style>
+/* Prose Customization */
+.prose {
+  --tw-prose-body: theme('colors.gray.600');
+  --tw-prose-headings: theme('colors.gray.900');
+  --tw-prose-links: theme('colors.purple.600');
+  --tw-prose-links-hover: theme('colors.purple.700');
+  --tw-prose-underline: theme('colors.purple.500 / 0.2');
+  --tw-prose-underline-hover: theme('colors.purple.500');
+  --tw-prose-bold: theme('colors.gray.900');
+  --tw-prose-counters: theme('colors.gray.900');
+  --tw-prose-bullets: theme('colors.gray.900');
+  --tw-prose-hr: theme('colors.gray.200');
+  --tw-prose-quote-borders: theme('colors.purple.200');
+  --tw-prose-captions: theme('colors.gray.500');
+  --tw-prose-code: theme('colors.gray.900');
+  --tw-prose-code-bg: theme('colors.gray.100');
+  --tw-prose-pre-code: theme('colors.gray.200');
+  --tw-prose-pre-bg: theme('colors.gray.800');
+  --tw-prose-pre-border: theme('colors.gray.700');
+  --tw-prose-th-borders: theme('colors.gray.200');
+  --tw-prose-td-borders: theme('colors.gray.100');
+}
+
+.prose :where(h2):not(:where([class~="not-prose"] *)) {
+  @apply text-2xl font-bold text-purple-800 mb-2 mt-12;
+}
+
+.prose :where(p):not(:where([class~="not-prose"] *)) {
+  @apply mb-2 text-gray-600 text-lg;
+}
+
+.prose :where(img):not(:where([class~="not-prose"] *)) {
+  @apply rounded-lg shadow-lg my-6 mx-auto;
+}
+
+.prose :where(blockquote):not(:where([class~="not-prose"] *)) {
+  @apply bg-purple-50 border-l-4 border-purple-600 p-4 my-8 max-w-2xl mx-auto;
+}
+
+.prose :where(blockquote p):not(:where([class~="not-prose"] *)) {
+  @apply text-lg font-medium text-purple-900 mb-0;
+}
+
+.prose :where(blockquote footer):not(:where([class~="not-prose"] *)) {
+  @apply mt-1 text-purple-600 text-sm;
+}
+
+.prose :where(ul):not(:where([class~="not-prose"] *)) {
+  @apply space-y-3 pl-6 mb-2;
+}
+
+.prose :where(li):not(:where([class~="not-prose"] *)) {
+  @apply flex items-start;
+}
+
+.prose :where(li):not(:where([class~="not-prose"] *))::before {
+  @apply flex-shrink-0 w-1.5 h-1.5 mt-2.5 rounded-full bg-purple-500 mr-3;
+  content: '';
+}
+</style>
+
+{% schema %}
+{
+  "name": "Blog Post Content",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "article",
+      "id": "article",
+      "label": "Article"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog Post Content"
+    }
+  ]
+}
+{% endschema %}
