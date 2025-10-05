@@ -1,0 +1,49 @@
+<script>
+  if (window.mwMarketingOffersHelper) {
+    class mwCustomTheme {
+      openCartDrawer(cart) {
+        if (window.theme?.settings?.cartType === 'page') {
+          window.location.href = "/cart";
+        } else {
+          const cartDrawer = document.querySelector("m-cart-drawer");
+          if (cartDrawer) {
+            cartDrawer.onCartDrawerUpdate();
+            setTimeout(() => cartDrawer.open(), 600); 
+          }
+
+        }
+// else {
+//            localStorage.setItem('forcedRestartBundle', true);
+//               setTimeout(() => { 
+//                 location.reload();
+//              },100)
+//         }
+      }
+
+      close() {
+
+      }
+
+      updateCartBubble(sections) {
+      }
+
+      getButtonLoadingClassName() {
+        return "loading";
+      }
+    }
+
+    const mwTheme = new mwCustomTheme();
+    window.mwMarketingOffersOptions.setThemeSections("");
+    window.mwMarketingOffersOptions.theme = mwTheme;
+
+    // document.addEventListener('DOMContentLoaded', () => {
+    //   if(localStorage.forcedRestartBundle) {   
+    //     setTimeout(function () {
+    //       const $cartIcon = document.querySelector('.m-cart-icon-bubble');
+    //       if ($cartIcon) $cartIcon.click();            
+    //       delete localStorage.forcedRestartBundle;     
+    //     }, 1000);
+    //   }
+    // });
+  }
+</script>

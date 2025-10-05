@@ -1,0 +1,274 @@
+{% comment %}
+  social-sharing.liquid
+  Unified snippet to share the current page (product, article, etc.) across multiple platforms.
+  Toggles are controlled by theme settings like settings.share_facebook, settings.share_tiktok, etc.
+{% endcomment %}
+
+{% assign share_url = og_url %}
+{% if share_url == blank %}
+  {% assign share_url = canonical_url | default: shop.url %}
+  {% if product %}
+    {% assign share_url = shop.url | append: product.url %}
+  {% endif %}
+{% endif %}
+
+{% assign share_title = og_title %}
+{% if share_title == blank %}
+  {% assign share_title = page_title | default: product.title | default: shop.name %}
+{% endif %}
+
+<div class="m-sharing-social {{ class }}">
+  <label>{{ 'products.product.social_share' | t }}:</label>
+  <div class="m:flex m:flex-wrap gap-2">
+
+    {%- comment -%}
+      Facebook
+    {%- endcomment -%}
+    {% if settings.share_facebook %}
+      {% assign share_encoded = share_url | url_encode %}
+      {% assign mtm_link = "https://www.facebook.com/sharer/sharer.php?u=" | append: share_encoded %}
+      <a
+      href="{{ mtm_link }}"
+      target="_blank"
+      aria-label="Facebook"
+      class="m-facebook"
+      {% if mtm_link contains "http" and mtm_link does not contain shop.secure_url %}
+        rel="nofollow"
+      {% endif %}>
+        <svg class="m-svg-icon" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg">
+          <path fill="currentColor" d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26 
+          S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"/>
+        </svg>
+      </a>
+    {% endif %}
+
+    {%- comment -%}
+      Pinterest
+    {%- endcomment -%}
+    {% if settings.share_pinterest %}
+      {% assign encoded_url = share_url | url_encode %}
+      {% assign encoded_media = og_image | url_encode %}
+      {% assign encoded_description = share_title | url_encode %}
+      {% assign pinterest_link = "https://pinterest.com/pin/create/button/?url=" | append: encoded_url | append: "&media=" | append: encoded_media | append: "&description=" | append: encoded_description %}
+      <a
+      href="{{ pinterest_link }}"
+      target="_blank"
+      aria-label="Pinterest"
+      class="m-pinterest"
+      {% if pinterest_link contains "http" and pinterest_link does not contain shop.secure_url %}
+        rel="nofollow"
+      {% endif %}
+      >
+        <svg class="m-svg-icon" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg">
+          <path fill="currentColor" d="M204 6.5C101.4 6.5 0 74.9 0 185.6c0 70.4 39.6 110.4 63.6 110.4 
+          9.9 0 15.6-27.6 15.6-35.4 0-9.3-23.7-29.1-23.7-67.8 0-80.4 61.2-137.4 140.4-137.4 68.1 
+          0 118.5 38.7 118.5 109.8 0 53.1-21.3 152.7-90.3 152.7-24.9 0-46.2-18-46.2-43.8 
+          0-37.8 26.4-74.4 26.4-113.4 0-66.2-93.9-54.2-93.9 25.8 0 16.8 2.1 35.4 
+          9.6 50.7-13.8 59.4-42 147.9-42 209.1 0 18.9 2.7 37.5 4.5 56.4 
+          3.4 3.8 1.7 3.4 6.9 1.5 50.4-69 48.6-82.5 71.4-172.8 
+          12.3 23.4 44.1 36 69.3 36 106.2 0 153.9-103.5 
+          153.9-196.8C384 71.3 298.2 6.5 204 6.5z"/>
+        </svg>
+      </a>
+    {% endif %}
+
+    {%- comment -%}
+      Threads
+    {%- endcomment -%}
+    {% if settings.share_threads %}
+    {% assign encoded_title = share_title | url_encode %}
+    {% assign encoded_url = share_url | url_encode %}
+    {% assign threads_link = "https://www.threads.net/intent/post?text=" | append: encoded_title | append: "&url=" | append: encoded_url %}
+    
+    <a
+      href="{{ threads_link }}"
+      target="_blank"
+      aria-label="Threads"
+      class="m-threads"
+      {% if threads_link contains "http" and threads_link does not contain shop.secure_url %}
+        rel="nofollow"
+      {% endif %}
+      >
+        <svg class="m-svg-icon" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+          <path fill="currentColor" d="M0,0H384V512H0Z" fill="none" /><!-- Placeholder; replace with official Threads icon if available -->
+          <text x="50%" y="50%" fill="#FFF" font-size="120" font-weight="bold" dy=".35em" text-anchor="middle">Threads</text>
+        </svg>
+      </a>
+    {% endif %}
+
+    {%- comment -%}
+      WhatsApp
+    {%- endcomment -%}
+    {% if settings.share_whatsapp %}
+    {% assign encoded_title = share_title | url_encode %}
+    {% assign encoded_url = share_url | url_encode %}
+    {% assign whatsapp_link = "https://api.whatsapp.com/send?text=" | append: encoded_title | append: " - " | append: encoded_url %}
+    
+    <a
+      href="{{ whatsapp_link }}"
+      target="_blank"
+      aria-label="WhatsApp"
+      class="m-whatsapp"
+      {% if whatsapp_link contains "http" and whatsapp_link does not contain shop.secure_url %}
+        rel="nofollow"
+      {% endif %}
+      >
+        <svg class="m-svg-icon" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+          <path fill="currentColor" d="M380.9 97.1C339 55.1 283.2 32 223.9 32 
+          c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9 
+          c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 
+          224.1-222 0-59.3-25.2-115-67.1-157zm-157 
+          341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4 
+          -69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3
+          -28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 
+          49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 
+          81.2 56.1 130.5 0 101.8-84.9 184.6
+          -186.6 184.6z"/>
+        </svg>
+      </a>
+    {% endif %}
+
+    {%- comment -%}
+      LinkedIn
+    {%- endcomment -%}
+    {% if settings.share_linkedin %}
+    {% assign encoded_title = share_title | url_encode %}
+    {% assign encoded_url = share_url | url_encode %}
+    {% assign linkedin_link = "https://www.linkedin.com/shareArticle?mini=true&url=" | append: encoded_url | append: "&title=" | append: encoded_title %}
+    
+    <a
+      href="{{ linkedin_link }}"
+      target="_blank"
+      aria-label="LinkedIn"
+      class="m-linkedin"
+      {% if linkedin_link contains "http" and linkedin_link does not contain shop.secure_url %}
+        rel="nofollow"
+      {% endif %}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="m-svg-icon">
+          <path d="M41,4H9C6.24,4,4,6.24,4,9v32c0,2.76,2.24,5,5,5h32c2.76,0,5-2.24,5-5V9C46,6.24,43.76,4,41,4z M17,20v19h-6V20H17z M11,14.47c0-1.4,1.2-2.47,3-2.47s2.93,1.07,3,2.47c0,1.4-1.12,2.53-3,2.53C12.2,17,11,15.87,11,14.47z M39,39h-6V20h6v2.56c0,0,1.93-2.56,5.81-2.56c3.97,0,7.19,2.73,7.19,8.26V39z"/>
+        </svg>
+      </a>
+    {% endif %}
+
+    {%- comment -%}
+      Telegram
+    {%- endcomment -%}
+    {% if settings.share_telegram %}
+    {% assign encoded_title = share_title | url_encode %}
+    {% assign encoded_url = share_url | url_encode %}
+    {% assign telegram_link = "https://t.me/share/url?url=" | append: encoded_url | append: "&text=" | append: encoded_title %}
+    
+    <a
+      href="{{ telegram_link }}"
+      target="_blank"
+      aria-label="Telegram"
+      class="m-telegram"
+      {% if telegram_link contains "http" and telegram_link does not contain shop.secure_url %}
+        rel="nofollow"
+      {% endif %}
+      >
+        <svg class="m-svg-icon" viewBox="0 0 496 512" xmlns="http://www.w3.org/2000/svg">
+          <path fill="currentColor" d="M248 8C111.1 8 0 119.1 0 
+          256s111.1 248 248 248 248-111.1 248-248S384.9 
+          8 248 8zm114.1 149.6c-3.7 38.7-25 167.1-35.3 221.5-4.4 23.4-13 31.2-21.4 31.9-18.2 1.7-32.1-11.9-49.8-23.2-27.6-18.1-43.1-29.4-69.2-47-30.6-20.4-10.7-31.6 6.6-49.6 4.5-4.7 82.2-75.8 83.7-81.9.2-.8.4-3.6-1.3-5.1-1.7-1.5-4.3-1-6.1-.6-2.6.6-44 27.9-123.9 81.5-11.8 8.1-22.4 12.1-31.2 11.9-10.3-.2-29.9-5.7-44.4-10.4-17.9-5.6-31.9-8.6-30.6-18.2.6-4.5 9.2-9.2 25.5-14.3 105.2-36.1 175.8-60.7 211.3-72.6 100.9-32.4 121.8-38.3 135.3-38.5 3 0 9.8.7 14.2 4.3 3.1 2.6 5 6.1 4.6 9.4z"/>
+        </svg>
+      </a>
+    {% endif %}
+
+    {%- comment -%}
+      Messenger
+    {%- endcomment -%}
+    {% if settings.share_messenger %}
+    {% assign encoded_url = share_url | url_encode %}
+    {% assign messenger_link = "https://www.messenger.com/share?link=" | append: encoded_url %}
+    
+    <a
+      href="{{ messenger_link }}"
+      target="_blank"
+      aria-label="Messenger"
+      class="m-messenger"
+      {% if messenger_link contains "http" and messenger_link does not contain shop.secure_url %}
+        rel="nofollow"
+      {% endif %}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="m-svg-icon">
+          <defs></defs>
+          <g fill="currentColor">
+            <path d="M221.3,2.7H34.7C15.5,2.7,0,18.2,0,37.4v181.3c0,19.2,15.5,34.7,34.7,34.7h43.2V160h-12v-22.4h12v-16.5
+              c0-12.1,7.3-18.7,18-18.7c5.1,0,9.5,0.4,10.8,0.6v12.6h-7.5c-5.9,0-7,2.8-7,6.9v9h14l-1.8,22.4h-12.2V253h23.9
+              c19.2,0,34.7-15.5,34.7-34.7V37.4C256,18.2,240.5,2.7,221.3,2.7z"/>
+          </g>
+        </svg>
+      </a>
+    {% endif %}
+
+    {%- comment -%}
+      Discord
+    {%- endcomment -%}
+    {% if settings.share_discord %}
+    {% assign discord_link = "https://discord.com/" %}
+    
+    <a
+      href="{{ discord_link }}"
+      target="_blank"
+      aria-label="Discord"
+      class="m-discord"
+      {% if discord_link contains "http" and discord_link does not contain shop.secure_url %}
+        rel="nofollow"
+      {% endif %}
+      >
+        <svg class="m-svg-icon" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg">
+          <path fill="currentColor" d="M524.6 40.4C478.1 15.4 428.2 0 377 0S275.9 15.4 229.4 40.4C222.1 47.1 217.4 55.3 216.7 64.3
+            c-4.6 59.9 1.4 119.5 17.7 176.2L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222
+            c0-59.3-25.2-115-67.1-157zM144 302.86c0-13.25 10.75-24 24-24c13.25 0 24 10.75 24 24c0 13.25-10.75 24-24 24
+            C154.75 326.86 144 316.11 144 302.86zm152 61.66c0 5.7-4.63 10.33-10.33 10.33h-21.66c-5.7 0-10.33-4.63-10.33-10.33
+            c0-5.7 4.63-10.33 10.33-10.33h21.66c5.7 0 10.33 4.63 10.33 10.33zm32-37.66c-13.25 0-24-10.75-24-24c0-13.25 10.75-24 24-24
+            c13.25 0 24 10.75 24 24C408 316.11 397.25 326.86 392 326.86z"/>
+        </svg>
+      </a>
+    {% endif %}
+    
+  </div>
+</div>
+
+<!-- JavaScript to detect mobile device and adjust share links to deep link schemes -->
+<script>
+  // Helper: check for mobile devices (iOS, Android)
+  function isMobile() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
+
+  if (isMobile()) {
+    // Facebook: Use deep link "fb://facewebmodal/f?href=" if available
+    var fbLink = document.querySelector('.m-facebook');
+    if (fbLink) {
+      // Get the current href and replace it with the deep link version
+      var originalHref = fbLink.getAttribute('href');
+      // Only update if the URL is a Facebook share URL
+      if(originalHref.indexOf("https://www.facebook.com/sharer/sharer.php") !== -1) {
+        fbLink.setAttribute('href', "fb://facewebmodal/f?href=" + encodeURIComponent(originalHref));
+      }
+    }
+
+    // WhatsApp: Replace with native deep link "whatsapp://send"
+    var waLink = document.querySelector('.m-whatsapp');
+    if (waLink) {
+      var originalHref = waLink.getAttribute('href');
+      if(originalHref.indexOf("https://api.whatsapp.com/send") !== -1) {
+        waLink.setAttribute('href', originalHref.replace("https://api.whatsapp.com/send", "whatsapp://send"));
+      }
+    }
+
+    // Messenger: Replace with native deep link "fb-messenger://share/?link="
+    var msgrLink = document.querySelector('.m-messenger');
+    if (msgrLink) {
+      var originalHref = msgrLink.getAttribute('href');
+      if(originalHref.indexOf("https://www.messenger.com/share") !== -1) {
+        msgrLink.setAttribute('href', originalHref.replace("https://www.messenger.com/share?link=", "fb-messenger://share/?link="));
+      }
+    }
+
+    // You can add additional adjustments here for other platforms if they support native deep linking.
+  }
+</script>

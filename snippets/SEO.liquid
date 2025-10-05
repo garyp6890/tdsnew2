@@ -1,0 +1,107 @@
+{% comment %}
+  JSON-LD Schema Markup for SEO
+  This file dynamically generates structured data for:
+  - Homepage (Website Schema)
+  - Product Pages (Product Schema)
+  - Blog Posts (Article Schema)
+  - Collections (ItemList Schema)
+
+  Note: Judge.me app handles Product Review schema, so we do not add review-related JSON-LD here.
+{% endcomment %}
+
+{%- if settings.use_favicon == true and settings.favicon != blank -%}
+  <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 96, height: 96 }}">
+{%- endif -%}
+
+{%- capture seo_title -%}
+  {%- if request.page_type == 'search' and search.performed == true -%}
+    {{ 'general.search.results_with_count' | t: terms: search.terms, count: search.results_count }}
+  {%- elsif request.page_type == 'password' -%}
+    {{ shop.name }} &ndash; {{ 'general.password_page.opening_soon' | t }}
+  {%- else -%}
+    {{ page_title }}
+  {%- endif -%}
+  {%- if current_tags -%}
+    {%- assign meta_tags = current_tags | join: ', ' -%} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags -}}
+  {%- endif -%}
+  {%- if current_page != 1 -%}
+  &ndash; {{ 'general.meta.page' | t: page: current_page }}
+  {%- endif -%}
+{%- endcapture -%}
+
+<title>{{ seo_title | strip }}</title>
+<meta name="description" content="{{ page_description | default: shop.description | escape }}">
+
+<!-- JSON-LD Structured Data for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {% if template.name == "index" %}
+    {
+      "@type": "WebSite",
+      "url": "{{ shop.url }}",
+      "name": "{{ shop.name }}",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ shop.url }}/search?q={search_term}",
+        "query-input": "required name=search_term"
+      }
+    }
+    {% elsif template.name == "product" %}
+    {
+      "@type": "Product",
+      "name": "{{ product.title }}",
+      "image": "{{ product.featured_image | img_url: '800x800' }}",
+      "description": "{{ product.description | strip_html | truncate: 160 }}",
+      "brand": {
+        "@type": "Brand",
+        "name": "{{ product.vendor }}"
+      },
+      "sku": "{{ product.sku }}",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "{{ cart.currency.iso_code }}",
+        "price": "{{ product.price | divided_by: 100.0 }}",
+        "availability": "https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}",
+        "url": "{{ shop.url }}{{ product.url }}"
+      }
+    }
+    {% elsif template.name == "article" %}
+    {
+      "@type": "Article",
+      "headline": "{{ article.title }}",
+      "image": "{{ article.image | img_url: '800x800' }}",
+      "author": {
+        "@type": "Person",
+        "name": "{{ article.author }}"
+      },
+      "datePublished": "{{ article.published_at | date: '%Y-%m-%d' }}",
+      "dateModified": "{{ article.updated_at | date: '%Y-%m-%d' }}",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ shop.url }}{{ article.url }}"
+      }
+    }
+    {% elsif template.name == "collection" %}
+    {
+      "@type": "ItemList",
+      "name": "{{ collection.title }}",
+      "itemListElement": [
+        {% for product in collection.products %}
+        {
+          "@type": "ListItem",
+          "position": {{ forloop.index }},
+          "item": {
+            "@type": "Product",
+            "name": "{{ product.title }}",
+            "url": "{{ shop.url }}{{ product.url }}"
+          }
+        }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }
+    {% endif %}
+  ]
+}
+</script>
