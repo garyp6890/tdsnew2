@@ -1,0 +1,211 @@
+{% comment %}
+  Contact Strip Section
+  Section: linktree-contact-strip.liquid
+  
+  Online Store 2.0 compatible section with customizable settings
+{% endcomment %}
+
+<div class="linktree-section contact-strip-section" data-section-id="{{ section.id }}" data-section="contact-strip">
+  <div class="linktree-container">
+    <button class="section-header" onclick="toggleSection(\'contact-strip\')">
+      <span class="section-title">
+        <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        {{ section.settings.section_title }}
+      </span>
+      <svg class="section-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    
+    <div class="section-content">
+      <div class="contact-buttons">
+        {% if section.settings.whatsapp_url != blank %}
+          <a href="{{ section.settings.whatsapp_url }}" 
+             class="contact-btn whatsapp"
+             onclick="trackLinkClick(\'WhatsApp\
+', this.href, \'contact_strip\')"
+             target="_blank"
+             rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16.75 13.96c.25.13.42.3.5.5.08.2.1.42.04.63-.06.21-.18.4-.34.56-.16.16-.35.28-.56.34-.21.06-.43.1-.63.04-.2-.06-.38-.18-.5-.34-.12-.16-.2-.35-.2-.56s.08-.4.2-.56c.12-.16.3-.28.5-.34.2-.06.43-.1.63-.04.2.06.38.18.5.34.12.16.2.35.2.56z"/>
+            </svg>
+            <span>{{ section.settings.whatsapp_text | default: \'WhatsApp\' }}</span>
+          </a>
+        {% endif %}
+
+        {% if section.settings.messenger_url != blank %}
+          <a href="{{ section.settings.messenger_url }}" 
+             class="contact-btn messenger"
+             onclick="trackLinkClick(\'Messenger\
+', this.href, \'contact_strip\')"
+             target="_blank"
+             rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+            <span>{{ section.settings.messenger_text | default: \'Messenger\' }}</span>
+          </a>
+        {% endif %}
+
+        {% if section.settings.email_address != blank %}
+          <a href="mailto:{{ section.settings.email_address }}" 
+             class="contact-btn email"
+             onclick="trackLinkClick(\'Email\
+', this.href, \'contact_strip\')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <span>{{ section.settings.email_text | default: \'Email\' }}</span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .contact-strip-section .contact-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .contact-strip-section .contact-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    color: var(--text-white);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  
+  .contact-strip-section .contact-btn:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-2px);
+  }
+  
+  .contact-strip-section .contact-btn svg {
+    flex-shrink: 0;
+  }
+  
+  /* Platform-specific hover effects */
+  .contact-btn.whatsapp:hover {
+    background: linear-gradient(135deg, rgba(37, 211, 102, 0.2) 0%, rgba(37, 211, 102, 0.1) 100%);
+    border-color: rgba(37, 211, 102, 0.4);
+  }
+  
+  .contact-btn.messenger:hover {
+    background: linear-gradient(135deg, rgba(0, 132, 255, 0.2) 0%, rgba(0, 132, 255, 0.1) 100%);
+    border-color: rgba(0, 132, 255, 0.4);
+  }
+  
+  .contact-btn.email:hover {
+    background: linear-gradient(135deg, rgba(234, 67, 53, 0.2) 0%, rgba(234, 67, 53, 0.1) 100%);
+    border-color: rgba(234, 67, 53, 0.4);
+  }
+  
+  /* Tablet and Desktop Adjustments */
+  @media screen and (min-width: 768px) {
+    .contact-strip-section .contact-buttons {
+      flex-direction: row;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    
+    .contact-strip-section .contact-btn {
+      min-width: 180px;
+      font-size: 1.1rem;
+      padding: 1rem 1.5rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Contact Strip",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Get In Touch",
+      "info": "Title displayed at the top of the section"
+    },
+    {
+      "type": "header",
+      "content": "WhatsApp"
+    },
+    {
+      "type": "url",
+      "id": "whatsapp_url",
+      "label": "WhatsApp URL",
+      "default": "https://wa.me/18122923600",
+      "info": "Link to your WhatsApp chat (e.g., https://wa.me/1234567890)"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_text",
+      "label": "WhatsApp Button Text",
+      "default": "💬 WhatsApp"
+    },
+    {
+      "type": "header",
+      "content": "Facebook Messenger"
+    },
+    {
+      "type": "url",
+      "id": "messenger_url",
+      "label": "Messenger URL",
+      "default": "https://m.me/thatdtailguy",
+      "info": "Link to your Facebook Messenger chat (e.g., https://m.me/yourusername)"
+    },
+    {
+      "type": "text",
+      "id": "messenger_text",
+      "label": "Messenger Button Text",
+      "default": "💬 Messenger"
+    },
+    {
+      "type": "header",
+      "content": "Email"
+    },
+    {
+      "type": "text",
+      "id": "email_address",
+      "label": "Email Address",
+      "default": "info@thatdetailshop.com",
+      "info": "Your contact email address"
+    },
+    {
+      "type": "text",
+      "id": "email_text",
+      "label": "Email Button Text",
+      "default": "📧 Email"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Strip"
+    }
+  ]
+}
+{% endschema %}
+

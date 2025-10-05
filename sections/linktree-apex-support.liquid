@@ -1,0 +1,199 @@
+{% comment %}
+  APEX Foam Cannon Support Section
+  Section: linktree-apex-support.liquid
+  
+  Online Store 2.0 compatible section with customizable settings
+{% endcomment %}
+
+<div class="linktree-section apex-support-section" data-section-id="{{ section.id }}" data-section="apex-support">
+  <div class="linktree-container">
+    <button class="section-header" onclick="toggleSection(\'apex-support\')">
+      <span class="section-title">
+        <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 8 12 12 16 14"/>
+        </svg>
+        {{ section.settings.section_title }}
+      </span>
+      <svg class="section-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    
+    <div class="section-content">
+      {% if section.settings.warranty_link != blank %}
+        <a href="{{ section.settings.warranty_link }}" 
+           class="apex-btn warranty-btn"
+           onclick="trackLinkClick(\'Warranty Registration\', this.href, \'apex_support\')"
+           target="_blank"
+           rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <line x1="10" y1="9" x2="8" y2="9"/>
+          </svg>
+          {{ section.settings.warranty_text | default: \'Warranty Registration\'
+          }}
+        </a>
+      {% endif %}
+
+      {% if section.settings.quick_start_video_url != blank %}
+        <a href="{{ section.settings.quick_start_video_url }}" 
+           class="apex-btn video-btn"
+           onclick="trackLinkClick(\'Quick-Start Video\', this.href, \'apex_support\')"
+           target="_blank"
+           rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="23 7 16 12 23 17 23 7"/>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+          </svg>
+          {{ section.settings.quick_start_video_text | default: \'Quick-Start Video\'
+          }}
+        </a>
+      {% endif %}
+
+      {% if section.settings.troubleshooting_guide_url != blank %}
+        <a href="{{ section.settings.troubleshooting_guide_url }}" 
+           class="apex-btn guide-btn"
+           onclick="trackLinkClick(\'Troubleshooting Guide\', this.href, \'apex_support\')"
+           target="_blank"
+           rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          {{ section.settings.troubleshooting_guide_text | default: \'Troubleshooting Guide\'
+          }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .apex-support-section .section-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .apex-support-section .apex-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    color: var(--text-white);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    justify-content: center;
+  }
+  
+  .apex-support-section .apex-btn:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-2px);
+  }
+  
+  .apex-support-section .apex-btn svg {
+    flex-shrink: 0;
+    color: var(--accent-blue);
+  }
+  
+  /* Tablet and Desktop Adjustments */
+  @media screen and (min-width: 768px) {
+    .apex-support-section .section-content {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    
+    .apex-support-section .apex-btn {
+      min-width: 250px;
+      font-size: 1.1rem;
+      padding: 1rem 1.5rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "APEX Support",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "APEX Support",
+      "info": "Title displayed at the top of the section"
+    },
+    {
+      "type": "header",
+      "content": "Warranty Registration"
+    },
+    {
+      "type": "url",
+      "id": "warranty_link",
+      "label": "Warranty Registration Link",
+      "info": "URL for APEX Foam Cannon warranty registration"
+    },
+    {
+      "type": "text",
+      "id": "warranty_text",
+      "label": "Button Text",
+      "default": "📝 Warranty Registration"
+    },
+    {
+      "type": "header",
+      "content": "Quick-Start Video"
+    },
+    {
+      "type": "url",
+      "id": "quick_start_video_url",
+      "label": "Quick-Start Video URL",
+      "info": "YouTube or other video link for quick-start guide"
+    },
+    {
+      "type": "text",
+      "id": "quick_start_video_text",
+      "label": "Button Text",
+      "default": "▶️ Quick-Start Video"
+    },
+    {
+      "type": "header",
+      "content": "Troubleshooting Guide"
+    },
+    {
+      "type": "url",
+      "id": "troubleshooting_guide_url",
+      "label": "Troubleshooting Guide URL",
+      "info": "Link to a troubleshooting guide or FAQ page"
+    },
+    {
+      "type": "text",
+      "id": "troubleshooting_guide_text",
+      "label": "Button Text",
+      "default": "❓ Troubleshooting Guide"
+    }
+  ],
+  "presets": [
+    {
+      "name": "APEX Support"
+    }
+  ]
+}
+{% endschema %}
+

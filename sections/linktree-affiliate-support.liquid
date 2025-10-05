@@ -1,0 +1,197 @@
+{% comment %}
+  Affiliate Support Section
+  Section: linktree-affiliate-support.liquid
+  
+  Online Store 2.0 compatible section with customizable settings
+{% endcomment %}
+
+<div class="linktree-section affiliate-support-section" data-section-id="{{ section.id }}" data-section="affiliate-support">
+  <div class="linktree-container">
+    <button class="section-header" onclick="toggleSection(\'affiliate-support\')">
+      <span class="section-title">
+        <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07L9.54 2.46c-.92.92-1.38 2.13-1.38 3.34z"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71c.92-.92 1.38-2.13 1.38-3.34z"/>
+        </svg>
+        {{ section.settings.section_title }}
+      </span>
+      <svg class="section-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    
+    <div class="section-content">
+      <div class="affiliate-links">
+        {% if section.settings.amazon_store_url != blank %}
+          <a href="{{ section.settings.amazon_store_url }}" 
+             class="affiliate-btn amazon"
+             onclick="trackLinkClick(\'Amazon Storefront\', this.href, \'affiliate_support\')"
+             target="_blank"
+             rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10.15 19.07c-.11-.03-.22-.06-.33-.09-.38-.1-.76-.2-1.13-.31-.4-.11-.8-.23-1.19-.36-.39-.13-.78-.26-1.16-.4-.38-.14-.76-.28-1.13-.43-.37-.15-.74-.3-1.1-.46-.36-.16-.71-.33-1.06-.5-.35-.17-.69-.35-1.02-.53-.33-.18-.65-.37-.96-.56-.31-.19-.6-.39-.89-.59-.28-.2-.56-.4-.82-.61-.26-.21-.5-.42-.73-.64-.23-.22-.44-.44-.64-.67-.2-.23-.38-.46-.55-.7-.17-.24-.32-.48-.46-.73-.14-.25-.26-.5-.37-.76-.11-.26-.2-.52-.28-.79-.08-.27-.14-.55-.18-.83-.04-.28-.06-.56-.06-.85 0-.29.02-.58.06-.86.04-.29.1-.57.18-.85.08-.28.19-.55.3-.82.11-.27.24-.53.37-.79.13-.26.27-.51.42-.76.15-.25.3-.49.46-.72.16-.23.33-.45.5-.67.17-.22.35-.43.53-.63.18-.2.37-.39.56-.57.19-.18.39-.36.59-.53.2-.17.4-.33.61-.49.21-.16.42-.31.64-.45.22-.14.45-.27.67-.39.22-.12.45-.23.69-.33.24-.1.48-.19.73-.27.25-.08.5-.15.76-.2.26-.05.52-.09.79-.12.27-.03.55-.05.83-.05.28 0 .56.02.85.05.29.03.57.07.85.12.28.05.55.11.82.19.27.08.53.17.79.28.26.11.51.23.76.37.25.14.49.28.72.42.23.14.45.29.67.45.22.16.43.33.63.5.2.17.39.35.57.53.18.18.36.36.53.53.17.17.33.33.49.49.16.16.31.31.45-.45-.14-.14-.27-.27-.39-.39-.12-.12-.23-.23-.33-.33-.1-.1-.19-.19-.27-.27-.08-.08-.15-.15-.2-.2-.05-.05-.09-.09-.12-.12-.03-.03-.05-.05-.05-.05z" fill="#FF9900"/>
+            </svg>
+            <span>{{ section.settings.amazon_store_text | default: \'Amazon Storefront\' }}</span>
+          </a>
+        {% endif %}
+
+        {% if section.settings.walmart_store_url != blank %}
+          <a href="{{ section.settings.walmart_store_url }}" 
+             class="affiliate-btn walmart"
+             onclick="trackLinkClick(\'Walmart Storefront\', this.href, \'affiliate_support\')"
+             target="_blank"
+             rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+            </svg>
+            <span>{{ section.settings.walmart_store_text | default: \'Walmart Storefront\' }}</span>
+          </a>
+        {% endif %}
+      </div>
+
+      {% if section.settings.disclaimer_text != blank %}
+        <p class="affiliate-disclaimer">{{ section.settings.disclaimer_text }}</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .affiliate-support-section .affiliate-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .affiliate-support-section .affiliate-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    color: var(--text-white);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    justify-content: center;
+  }
+  
+  .affiliate-support-section .affiliate-btn:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-2px);
+  }
+  
+  .affiliate-support-section .affiliate-btn svg {
+    flex-shrink: 0;
+  }
+  
+  .affiliate-support-section .affiliate-disclaimer {
+    font-size: 0.75rem;
+    color: var(--text-gray-400);
+    text-align: center;
+    margin-top: 1.5rem;
+    line-height: 1.4;
+  }
+  
+  /* Platform-specific hover effects */
+  .affiliate-btn.amazon:hover {
+    background: linear-gradient(135deg, rgba(255, 153, 0, 0.2) 0%, rgba(255, 153, 0, 0.1) 100%);
+    border-color: rgba(255, 153, 0, 0.4);
+  }
+  
+  .affiliate-btn.walmart:hover {
+    background: linear-gradient(135deg, rgba(0, 113, 206, 0.2) 0%, rgba(0, 113, 206, 0.1) 100%);
+    border-color: rgba(0, 113, 206, 0.4);
+  }
+  
+  /* Tablet and Desktop Adjustments */
+  @media screen and (min-width: 768px) {
+    .affiliate-support-section .affiliate-links {
+      flex-direction: row;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    
+    .affiliate-support-section .affiliate-btn {
+      min-width: 200px;
+      font-size: 1.1rem;
+      padding: 1rem 1.5rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Affiliate Support",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Shop Our Partners",
+      "info": "Title displayed at the top of the section"
+    },
+    {
+      "type": "header",
+      "content": "Amazon Storefront"
+    },
+    {
+      "type": "url",
+      "id": "amazon_store_url",
+      "label": "Amazon Storefront URL",
+      "info": "Link to your Amazon storefront (e.g., https://amazon.com/shop/yourname)"
+    },
+    {
+      "type": "text",
+      "id": "amazon_store_text",
+      "label": "Amazon Button Text",
+      "default": "🛒 Amazon Storefront",
+      "info": "Text displayed on the Amazon button"
+    },
+    {
+      "type": "header",
+      "content": "Walmart Storefront"
+    },
+    {
+      "type": "url",
+      "id": "walmart_store_url",
+      "label": "Walmart Storefront URL",
+      "info": "Link to your Walmart storefront (e.g., https://walmart.com/shop/yourname)"
+    },
+    {
+      "type": "text",
+      "id": "walmart_store_text",
+      "label": "Walmart Button Text",
+      "default": "🛒 Walmart Storefront",
+      "info": "Text displayed on the Walmart button"
+    },
+    {
+      "type": "header",
+      "content": "Disclaimer"
+    },
+    {
+      "type": "textarea",
+      "id": "disclaimer_text",
+      "label": "Affiliate Disclaimer Text",
+      "default": "As an Amazon Associate and Walmart Affiliate, I earn from qualifying purchases.",
+      "info": "Optional disclaimer for affiliate links"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Affiliate Support"
+    }
+  ]
+}
+{% endschema %}
+

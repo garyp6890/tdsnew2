@@ -1,0 +1,241 @@
+{% comment %}
+  Linktree Hero Section
+  Section: linktree-hero.liquid
+  
+  Online Store 2.0 compatible section with customizable settings
+{% endcomment %}
+
+<div class="linktree-section hero-section" data-section-id="{{ section.id }}" data-section="hero">
+  <div class="linktree-container">
+    {% if section.settings.show_hero_image and section.settings.hero_image != blank %}
+      <div class="hero-image-wrapper">
+        <img src="{{ section.settings.hero_image | image_url: width: 1000 }}" 
+             alt="{{ section.settings.hero_image.alt | default: section.settings.hero_tagline }}"
+             loading="lazy"
+             class="hero-image"
+        >
+      </div>
+    {% endif %}
+
+    <div class="hero-content">
+      {% if section.settings.thatdetailshop_logo != blank %}
+        <img src="{{ section.settings.thatdetailshop_logo | image_url: width: 200 }}" 
+             alt="ThatDetailShop Logo"
+             loading="lazy"
+             class="brand-logo thatdetailshop-logo"
+        >
+      {% endif %}
+
+      {% if section.settings.thatdtailguy_logo != blank %}
+        <img src="{{ section.settings.thatdtailguy_logo | image_url: width: 200 }}" 
+             alt="ThatDtailGuy Logo"
+             loading="lazy"
+             class="brand-logo thatdtailguy-logo"
+        >
+      {% endif %}
+
+      {% if section.settings.hero_tagline != blank %}
+        <h1 class="hero-tagline">{{ section.settings.hero_tagline }}</h1>
+      {% endif %}
+
+      {% if section.settings.hero_subtitle != blank %}
+        <p class="hero-subtitle">{{ section.settings.hero_subtitle }}</p>
+      {% endif %}
+
+      {% if section.settings.editable_bio != blank %}
+        <p class="editable-bio">{{ section.settings.editable_bio }}</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .hero-section {
+    text-align: center;
+    padding: 2rem 1rem;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--color-purple-dark) 0%, var(--color-purple-light) 100%);
+    color: var(--text-white);
+  }
+
+  .hero-image-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.3;
+  }
+
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .brand-logo {
+    max-width: 120px;
+    height: auto;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+  }
+
+  .brand-logo:hover {
+    transform: scale(1.05);
+  }
+
+  .thatdetailshop-logo {
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-tagline {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+    background: linear-gradient(45deg, #ffffff, #e0e7ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-gray-200);
+    margin-bottom: 1rem;
+  }
+
+  .editable-bio {
+    font-size: 0.95rem;
+    color: var(--text-gray-300);
+    line-height: 1.5;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  @media screen and (min-width: 768px) {
+    .hero-section {
+      padding: 3rem 2rem;
+    }
+
+    .brand-logo {
+      max-width: 150px;
+    }
+
+    .hero-tagline {
+      font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.3rem;
+    }
+
+    .editable-bio {
+      font-size: 1.1rem;
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    .hero-section {
+      padding: 4rem 3rem;
+    }
+
+    .brand-logo {
+      max-width: 180px;
+    }
+
+    .hero-tagline {
+      font-size: 3rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Linktree Hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logos & Branding"
+    },
+    {
+      "type": "image_picker",
+      "id": "thatdetailshop_logo",
+      "label": "ThatDetailShop Logo",
+      "info": "Main business logo (recommended: 160x160px)"
+    },
+    {
+      "type": "image_picker",
+      "id": "thatdtailguy_logo",
+      "label": "ThatDtailGuy Logo",
+      "info": "Personal brand logo (recommended: 160x160px)"
+    },
+    {
+      "type": "header",
+      "content": "Hero Content"
+    },
+    {
+      "type": "text",
+      "id": "hero_tagline",
+      "label": "Hero Tagline",
+      "default": "Follow me for auto detailing tips, tricks, how-tos.",
+      "info": "Short, impactful statement"
+    },
+    {
+      "type": "text",
+      "id": "hero_subtitle",
+      "label": "Hero Subtitle",
+      "default": "Professional detailing services & premium products.",
+      "info": "Brief supporting text"
+    },
+    {
+      "type": "textarea",
+      "id": "editable_bio",
+      "label": "Editable Bio (2-3 lines)",
+      "default": "Welcome to That Detail Shop! I\'m ThatDtailGuy, your go-to for premium auto detailing products and expert advice. Join our community for tips, tutorials, and exclusive offers to keep your ride looking its best.",
+      "info": "A short, editable biography (2-3 lines)"
+    },
+    {
+      "type": "header",
+      "content": "Background Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hero_image",
+      "label": "Show Background Image",
+      "default": false,
+      "info": "Display an image in the background of the hero section"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Background Image",
+      "info": "Optional background image for the hero section"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Linktree Hero"
+    }
+  ]
+}
+{% endschema %}
+

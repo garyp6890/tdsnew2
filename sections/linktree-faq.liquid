@@ -1,0 +1,249 @@
+{% comment %}
+  FAQ Section
+  Section: linktree-faq.liquid
+  
+  Online Store 2.0 compatible section with customizable settings
+{% endcomment %}
+
+<div class="linktree-section faq-section" data-section-id="{{ section.id }}" data-section="faq">
+  <div class="linktree-container">
+    <button class="section-header" onclick="toggleSection(\'faq\')">
+      <span class="section-title">
+        <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        {{ section.settings.section_title }}
+      </span>
+      <svg class="section-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    
+    <div class="section-content">
+      <div class="faq-items">
+        {% for block in section.blocks %}
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              <span>{{ block.settings.question }}</span>
+              <svg class="faq-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              <p>{{ block.settings.answer }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if section.settings.show_faq_link and section.settings.faq_link_url != blank %}
+        <div class="view-all-faq">
+          <a href="{{ section.settings.faq_link_url }}" 
+             class="view-all-btn"
+             onclick="trackLinkClick(\'View All FAQs\', this.href, \'faq\')"
+             target="_blank"
+             rel="noopener">
+            {{ section.settings.faq_link_text | default: \'View All FAQs\'
+            }}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .faq-section .faq-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .faq-section .faq-item {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+  
+  .faq-section .faq-item.active {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+  }
+  
+  .faq-section .faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background: transparent;
+    border: none;
+    color: var(--text-white);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+  }
+  
+  .faq-section .faq-question:hover {
+    color: var(--accent-blue);
+  }
+  
+  .faq-section .faq-toggle {
+    transition: transform 0.3s ease;
+  }
+  
+  .faq-section .faq-item.active .faq-toggle {
+    transform: rotate(180deg);
+  }
+  
+  .faq-section .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+  }
+  
+  .faq-section .faq-item.active .faq-answer {
+    max-height: 200px; /* Adjust as needed */
+    padding: 0 1.25rem 1rem 1.25rem;
+  }
+  
+  .faq-section .faq-answer p {
+    font-size: 0.9rem;
+    color: var(--text-gray-300);
+    line-height: 1.5;
+    margin: 0;
+  }
+  
+  .faq-section .view-all-faq {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+  
+  .faq-section .view-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: var(--text-white);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  
+  .faq-section .view-all-btn:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-2px);
+  }
+  
+  /* Tablet and Desktop Adjustments */
+  @media screen and (min-width: 768px) {
+    .faq-section .faq-question {
+      font-size: 1.1rem;
+    }
+    
+    .faq-section .faq-answer p {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "FAQ Section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "❓ Frequently Asked Questions",
+      "info": "Title displayed at the top of the section"
+    },
+    {
+      "type": "header",
+      "content": "View All FAQs Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_faq_link",
+      "label": "Show \"View All FAQs\" button",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "faq_link_url",
+      "label": "\"View All FAQs\" Link",
+      "info": "URL for your full FAQ page (e.g., /pages/faq)"
+    },
+    {
+      "type": "text",
+      "id": "faq_link_text",
+      "label": "\"View All FAQs\" Button Text",
+      "default": "View All FAQs",
+      "info": "Text for the \"View All FAQs\" button"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "What is the best way to wash my car?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "For best results, use the two-bucket method with a high-quality car shampoo and a microfiber wash mitt. Always rinse thoroughly and dry with a premium drying towel to prevent water spots."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Section",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How often should I detail my car?",
+            "answer": "It depends on your driving habits and environmental factors. Generally, a full detail every 3-6 months is recommended, with regular washes in between."
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is ceramic coating?",
+            "answer": "Ceramic coating is a liquid polymer that is applied by hand to the exterior of a vehicle. The coating chemically bonds with the factory paint, creating a layer of protection."
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you offer detailing services?",
+            "answer": "Yes, we offer a range of professional detailing services. Please visit our services page or contact us for a quote."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

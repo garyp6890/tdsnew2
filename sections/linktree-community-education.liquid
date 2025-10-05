@@ -1,0 +1,223 @@
+{% comment %}
+  Community & Education Section
+  Section: linktree-community-education.liquid
+  
+  Online Store 2.0 compatible section with customizable settings
+{% endcomment %}
+
+<div class="linktree-section community-education-section" data-section-id="{{ section.id }}" data-section="community-education">
+  <div class="linktree-container">
+    <button class="section-header" onclick="toggleSection(\'community-education\')">
+      <span class="section-title">
+        <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"/>
+        </svg>
+        {{ section.settings.section_title }}
+      </span>
+      <svg class="section-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    
+    <div class="section-content">
+      <div class="community-links">
+        {% for block in section.blocks %}
+          <a href="{{ block.settings.link_url }}" 
+             class="community-link-btn"
+             onclick="trackLinkClick(\'{{ block.settings.link_text | escape }}\' , this.href, \'community_education\')"
+             target="_blank"
+             rel="noopener">
+            {% if block.settings.link_icon != blank %}
+              <img src="{{ block.settings.link_icon | image_url: width: 40 }}" alt="{{ block.settings.link_text | default: \'Icon\' }}" class="link-icon" loading="lazy">
+            {% else %}
+              <svg class="link-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                {% case block.settings.icon_preset %}
+                  {% when \'youtube\' %}
+                    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C2 8.16 2 12 2 12s0 3.84.46 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C22 15.84 22 12 22 12s0-3.84-.46-5.58z"/>
+                    <polygon points="10 15 15 12 10 9 10 15"/>
+                  {% when \'blog\' %}
+                    <path d="M4 11a9 9 0 0 1 9 9"/>
+                    <path d="M4 4a16 16 0 0 1 16 16"/>
+                    <circle cx="5" cy="19" r="1"/>
+                  {% when \'group\' %}
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"/>
+                  {% else %}
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07L9.54 2.46c-.92.92-1.38 2.13-1.38 3.34z"/>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71c.92-.92 1.38-2.13 1.38-3.34z"/>
+                {% endcase %}
+              </svg>
+            {% endif %}
+            <span>{{ block.settings.link_text }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .community-education-section .community-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .community-education-section .community-link-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    color: var(--text-white);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    justify-content: center;
+  }
+  
+  .community-education-section .community-link-btn:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-2px);
+  }
+  
+  .community-education-section .link-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: var(--accent-blue);
+  }
+  
+  .community-education-section .link-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  /* Tablet and Desktop Adjustments */
+  @media screen and (min-width: 768px) {
+    .community-education-section .community-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .community-education-section .community-link-btn {
+      font-size: 1.1rem;
+      padding: 1rem 1.5rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Community & Education",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Community & Education",
+      "info": "Title displayed at the top of the section"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Link Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "link_text",
+          "label": "Link Text",
+          "default": "That Detail Group"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL",
+          "default": "https://www.facebook.com/groups/thatdetailgroup"
+        },
+        {
+          "type": "select",
+          "id": "icon_preset",
+          "label": "Preset Icon",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "youtube",
+              "label": "YouTube"
+            },
+            {
+              "value": "blog",
+              "label": "Blog/Article"
+            },
+            {
+              "value": "group",
+              "label": "Group/Community"
+            },
+            {
+              "value": "link",
+              "label": "Generic Link"
+            }
+          ],
+          "default": "group"
+        },
+        {
+          "type": "image_picker",
+          "id": "link_icon",
+          "label": "Custom Icon (Overrides Preset)",
+          "info": "Upload a custom icon for this link (SVG or PNG recommended)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Community & Education",
+      "blocks": [
+        {
+          "type": "link",
+          "settings": {
+            "link_text": "That Detail Group",
+            "link_url": "https://www.facebook.com/groups/thatdetailgroup",
+            "icon_preset": "group"
+          }
+        },
+        {
+          "type": "link",
+          "settings": {
+            "link_text": "YouTube Tutorials",
+            "link_url": "https://youtube.com/c/thatdtailguy",
+            "icon_preset": "youtube"
+          }
+        },
+        {
+          "type": "link",
+          "settings": {
+            "link_text": "Blog / That Detail Hub",
+            "link_url": "/blogs/news",
+            "icon_preset": "blog"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

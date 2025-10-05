@@ -1,0 +1,488 @@
+{% comment %}
+  Main Linktree Page Section
+  Section: main-linktree-page.liquid
+  
+  This section acts as an orchestrator, including all other Linktree sections.
+  It also contains global styles and analytics scripts.
+{% endcomment %}
+
+<div id="LinktreeLandingPage" class="linktree-landing-page">
+  {% comment %} Global Analytics Scripts {% endcomment %}
+  <script>
+    // Google Analytics 4 (GA4)
+    {% if section.settings.google_analytics_id != blank %}
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({\'gtm.start\':
+      new Date().getTime(),event:\'gtm.js\'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!=\'dataLayer\'?\'&l=\'+l:\'\';j.async=true;j.src=
+      \'https://www.googletagmanager.com/gtm.js?id=\'+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,\'script\',\'dataLayer\',\'{{ section.settings.google_analytics_id }}\');
+    {% endif %}
+
+    // Facebook Pixel
+    {% if section.settings.facebook_pixel_id != blank %}
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version=\'2.0\';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,\'script\',
+      \'https://connect.facebook.net/en_US/fbevents.js\');
+      fbq(\'init\', \'{{ section.settings.facebook_pixel_id }}\');
+      fbq(\'track\', \'PageView\');
+    {% endif %}
+
+    // Dark Mode Toggle Script
+    document.addEventListener(\'DOMContentLoaded\', () => {
+      const darkModeToggle = document.getElementById(\'darkModeToggle\');
+      const body = document.body;
+
+      // Check for saved preference, or default to system preference
+      const prefersDarkScheme = window.matchMedia(\'(prefers-color-scheme: dark)\'
+).matches;
+      const currentTheme = localStorage.getItem(\'theme\');
+
+      if (currentTheme === \'dark\' || (currentTheme === null && prefersDarkScheme)) {
+        body.classList.add(\'dark-mode\');
+        if (darkModeToggle) darkModeToggle.checked = true;
+      } else {
+        body.classList.remove(\'dark-mode\');
+        if (darkModeToggle) darkModeToggle.checked = false;
+      }
+
+      if (darkModeToggle) {
+        darkModeToggle.addEventListener(\'change\', () => {
+          if (darkModeToggle.checked) {
+            body.classList.add(\'dark-mode\');
+            localStorage.setItem(\'theme\', \'dark\');
+          } else {
+            body.classList.remove(\'dark-mode\');
+            localStorage.setItem(\'theme\', \'light\');
+          }
+        });
+      }
+    });
+
+    // Section Collapsibility Script
+    function toggleSection(sectionId) {
+      const section = document.querySelector(`[data-section=\'${sectionId}\']`);
+      if (section) {
+        section.classList.toggle(\'collapsed\');
+      }
+    }
+
+    // FAQ Collapsibility Script
+    function toggleFAQ(button) {
+      const faqItem = button.closest(\'.faq-item\');
+      if (faqItem) {
+        faqItem.classList.toggle(\'active\');
+      }
+    }
+
+    // Analytics Tracking Function
+    function trackLinkClick(eventName, url, section) {
+      console.log(`Tracking: ${eventName}, URL: ${url}, Section: ${section}`);
+      // Basic GA4 event
+      if (typeof gtag === \'function\') {
+        gtag(\'event\', \'link_click\', {
+          \'event_category\': \'Linktree\',
+          \'event_label\': eventName,
+          \'value\': url,
+          \'section\': section,
+          \'device\': window.innerWidth < 768 ? \'mobile\' : (window.innerWidth < 1024 ? \'tablet\' : \'desktop\'),
+          \'location\': \'{{ request.geoip_country_name | default: \'Unknown\' }}\' // Shopify Liquid for geoip
+        });
+      }
+      // Facebook Pixel event
+      if (typeof fbq === \'function\') {
+        fbq(\'trackCustom\', \'LinktreeClick\', {
+          \'event_name\': eventName,
+          \'url\': url,
+          \'section\': section
+        });
+      }
+    }
+
+    // Track Page View with more details
+    document.addEventListener(\'DOMContentLoaded\', () => {
+      if (typeof gtag === \'function\') {
+        gtag(\'event\', \'page_view\', {
+          \'page_title\': document.title,
+          \'page_location\': window.location.href,
+          \'page_path\': window.location.pathname,
+          \'referrer\': document.referrer,
+          \'device\': window.innerWidth < 768 ? \'mobile\' : (window.innerWidth < 1024 ? \'tablet\' : \'desktop\'),
+          \'location\': \'{{ request.geoip_country_name | default: \'Unknown\' }}\'
+        });
+      }
+    });
+  </script>
+
+  {% comment %} Dark Mode Toggle {% endcomment %}
+  <div class="dark-mode-toggle-wrapper">
+    <label class="switch">
+      <input type="checkbox" id="darkModeToggle">
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  {% comment %} Include all Linktree sections {% endcomment %}
+  {% section \'linktree-hero\' %}
+  {% section \'linktree-featured-products\' %}
+  {% section \'linktree-reviews\' %}
+  {% section \'linktree-apex-support\' %}
+  {% section \'linktree-community-education\' %}
+  {% section \'linktree-affiliate-support\' %}
+  {% section \'linktree-social-grid\' %}
+  {% section \'linktree-mission-impact\' %}
+  {% section \'linktree-contact-strip\' %}
+  {% section \'linktree-faq\' %}
+</div>
+
+<style>
+  /* Global Variables and Base Styles */
+  :root {
+    --color-black: #000000;
+    --color-white: #ffffff;
+    --color-cool-gray: #808080;
+    --color-dark-purple: #3a0ca3;
+    --color-purple-light: #4361ee;
+    --color-purple-dark: #3f37c9;
+    --color-blue: #4895ef;
+    --color-red: #f72585;
+    --color-green: #4cc9f0;
+    --color-yellow: #fee440;
+
+    --bg-color: var(--color-black);
+    --text-color: var(--color-white);
+    --text-gray-100: #f8f9fa;
+    --text-gray-200: #e9ecef;
+    --text-gray-300: #dee2e6;
+    --text-gray-400: #ced4da;
+    --text-gray-500: #adb5bd;
+    --text-gray-600: #6c757d;
+
+    --accent-blue: var(--color-blue);
+    --accent-blue-hover: #3a86ff;
+    --accent-red: var(--color-red);
+    --accent-red-hover: #e01e7e;
+    --accent-green: var(--color-green);
+    --accent-yellow: var(--color-yellow);
+
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-bg-hover: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-border-hover: rgba(255, 255, 255, 0.3);
+
+    --border-radius-sm: 0.5rem;
+    --border-radius-md: 0.75rem;
+    --border-radius-lg: 1rem;
+
+    --font-family-base: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";
+  }
+
+  /* Dark Mode Overrides */
+  body.dark-mode {
+    --bg-color: var(--color-black);
+    --text-color: var(--color-white);
+    --text-gray-100: #f8f9fa;
+    --text-gray-200: #e9ecef;
+    --text-gray-300: #dee2e6;
+    --text-gray-400: #ced4da;
+    --text-gray-500: #adb5bd;
+    --text-gray-600: #6c757d;
+
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-bg-hover: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-border-hover: rgba(255, 255, 255, 0.3);
+  }
+
+  /* General Body Styles */
+  body {
+    margin: 0;
+    font-family: var(--font-family-base);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .linktree-landing-page {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .linktree-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  /* Section Styling */
+  .linktree-section {
+    margin-bottom: 1.5rem;
+    background: rgba(0, 0, 0, 0.2); /* Darker glass effect for sections */
+    border-radius: var(--border-radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+  }
+
+  .linktree-section.collapsed .section-content {
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+  }
+
+  .linktree-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: border-bottom 0.3s ease;
+  }
+
+  .linktree-section.collapsed .section-header {
+    border-bottom: none;
+  }
+
+  .linktree-section .section-header:hover {
+    color: var(--accent-blue);
+  }
+
+  .linktree-section .section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .linktree-section .section-icon {
+    color: var(--accent-blue);
+  }
+
+  .linktree-section .section-toggle {
+    transition: transform 0.3s ease;
+  }
+
+  .linktree-section.collapsed .section-toggle {
+    transform: rotate(-90deg);
+  }
+
+  .linktree-section .section-content {
+    padding: 1rem;
+    max-height: 1000px; /* Arbitrary large value for smooth transition */
+    transition: max-height 0.5s ease-in, padding 0.5s ease-in;
+  }
+
+  /* Dark Mode Toggle Switch */
+  .dark-mode-toggle-wrapper {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: \"\";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  input:checked + .slider {
+    background-color: var(--accent-blue);
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px var(--accent-blue);
+  }
+
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  /* Custom Scrollbar for carousels */
+  .products-carousel::-webkit-scrollbar,
+  .reviews-carousel::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .products-carousel::-webkit-scrollbar-track,
+  .reviews-carousel::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+
+  .products-carousel::-webkit-scrollbar-thumb,
+  .reviews-carousel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+  }
+
+  .products-carousel::-webkit-scrollbar-thumb:hover,
+  .reviews-carousel::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  /* General Link Button Styling */
+  .link-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
+    padding: 0.75rem 1.25rem;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .link-button:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-2px);
+  }
+
+  .link-button svg {
+    flex-shrink: 0;
+    color: var(--accent-blue);
+  }
+
+  /* Responsive Adjustments */
+  @media screen and (min-width: 768px) {
+    .linktree-container {
+      padding: 1.5rem;
+    }
+
+    .linktree-section {
+      margin-bottom: 2rem;
+    }
+
+    .linktree-section .section-header {
+      padding: 1.25rem;
+      font-size: 1.4rem;
+    }
+
+    .linktree-section .section-content {
+      padding: 1.5rem;
+    }
+
+    .dark-mode-toggle-wrapper {
+      top: 2rem;
+      right: 2rem;
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    .linktree-container {
+      padding: 2rem;
+    }
+
+    .linktree-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .linktree-section .section-header {
+      padding: 1.5rem;
+      font-size: 1.5rem;
+    }
+
+    .linktree-section .section-content {
+      padding: 2rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Main Linktree Page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Global Analytics"
+    },
+    {
+      "type": "text",
+      "id": "google_analytics_id",
+      "label": "Google Analytics 4 Measurement ID",
+      "info": "e.g., G-XXXXXXXXXX"
+    },
+    {
+      "type": "text",
+      "id": "facebook_pixel_id",
+      "label": "Facebook Pixel ID",
+      "info": "e.g., XXXXXXXXXXXXXXX"
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Main Linktree Page"
+    }
+  ]
+}
+{% endschema %}
+

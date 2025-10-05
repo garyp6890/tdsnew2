@@ -1,0 +1,449 @@
+{% comment %}
+  Featured Products Section
+  Section: linktree-featured-products.liquid
+  
+  Online Store 2.0 compatible section with customizable settings
+{% endcomment %}
+
+<div class="linktree-section featured-products-section" data-section-id="{{ section.id }}" data-section="featured-products">
+  <div class="linktree-container">
+    <button class="section-header" onclick="toggleSection(\'featured-products\')">
+      <span class="section-title">
+        <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        {{ section.settings.section_title }}
+      </span>
+      <svg class="section-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    
+    <div class="section-content">
+      <div class="products-carousel">
+        {% assign products_to_display = section.settings.products_to_show | plus: 0 %}
+        {% assign product_count = 0 %}
+
+        {% if section.settings.collection != blank %}
+          {% assign collection = collections[section.settings.collection] %}
+          {% if collection != empty %}
+            {% for product in collection.products limit: products_to_display %}
+              {% assign product_count = product_count | plus: 1 %}
+              <div class="product-card">
+                <a href="{{ product.url | within: collection }}" onclick="trackLinkClick(\'Shop Now - {{ product.title | escape }}\' , this.href, \'featured_products\')">
+                  <img src="{{ product.featured_image | image_url: width: 300 }}" alt="{{ product.featured_image.alt | default: product.title }}" loading="lazy">
+                  <h4 class="product-name">{{ product.title }}</h4>
+                  <p class="product-price">{{ product.price | money }}</p>
+                  <span class="shop-now-btn">Shop Now</span>
+                </a>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endif %}
+
+        {% comment %} Fallback for specific products if collection is not set or has fewer products {% endcomment %}
+        {% if product_count < products_to_display %}
+          {% for i in (1..products_to_display) %}
+            {% assign product_url_setting = \'product_url_\' | append: i %}
+            {% assign product_image_setting = \'product_image_\' | append: i %}
+            {% assign product_name_setting = \'product_name_\' | append: i %}
+            {% assign product_price_setting = \'product_price_\' | append: i %}
+
+            {% if section.settings[product_url_setting] != blank %}
+              <div class="product-card">
+                <a href="{{ section.settings[product_url_setting] }}" onclick="trackLinkClick(\'Shop Now - {{ section.settings[product_name_setting] | escape }}\' , this.href, \'featured_products\')">
+                  {% if section.settings[product_image_setting] != blank %}
+                    <img src="{{ section.settings[product_image_setting] | image_url: width: 300 }}" alt="{{ section.settings[product_name_setting] | default: \'Product Image\' }}" loading="lazy">
+                  {% else %}
+                    <div class="product-image-placeholder"></div>
+                  {% endif %}
+                  <h4 class="product-name">{{ section.settings[product_name_setting] }}</h4>
+                  {% if section.settings[product_price_setting] != blank %}
+                    <p class="product-price">{{ section.settings[product_price_setting] }}</p>
+                  {% endif %}
+                  <span class="shop-now-btn">Shop Now</span>
+                </a>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      {% if section.settings.show_collection_link and section.settings.collection_link_url != blank %}
+        <div class="view-all-products">
+          <a href="{{ section.settings.collection_link_url }}" 
+             class="view-all-btn"
+             onclick="trackLinkClick(\'View All Products\', this.href, \'featured_products\')">
+            {{ section.settings.collection_link_text | default: \'Shop All Products\' }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="13 17 18 12 13 7"></polyline>
+              <polyline points="6 17 11 12 6 7"></polyline>
+            </svg>
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .featured-products-section .products-carousel {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scroll-snap-type: x mandatory;
+    margin-bottom: 1.5rem;
+  }
+  
+  .featured-products-section .product-card {
+    flex: 0 0 auto;
+    width: 180px; /* Fixed width for mobile carousel items */
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    scroll-snap-align: start;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+  
+  .featured-products-section .product-card:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-2px);
+  }
+  
+  .featured-products-section .product-card a {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .featured-products-section .product-card img {
+    max-width: 100%;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .featured-products-section .product-image-placeholder {
+    width: 100%;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .featured-products-section .product-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-white);
+    margin-bottom: 0.5rem;
+    flex-grow: 1;
+  }
+  
+  .featured-products-section .product-price {
+    font-size: 0.85rem;
+    color: var(--accent-yellow);
+    margin-bottom: 0.75rem;
+  }
+  
+  .featured-products-section .shop-now-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-blue);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+  }
+  
+  .featured-products-section .shop-now-btn:hover {
+    background: var(--accent-blue-hover);
+  }
+  
+  .featured-products-section .view-all-products {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+  
+  .featured-products-section .view-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: var(--text-white);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  
+  .featured-products-section .view-all-btn:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-2px);
+  }
+  
+  /* Tablet and Desktop Adjustments */
+  @media screen and (min-width: 768px) {
+    .featured-products-section .products-carousel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      overflow-x: visible;
+      scroll-snap-type: none;
+      justify-items: center;
+    }
+    
+    .featured-products-section .product-card {
+      width: 100%;
+      max-width: 250px;
+    }
+  }
+  
+  @media screen and (min-width: 1024px) {
+    .featured-products-section .products-carousel {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    
+    .featured-products-section .product-card {
+      max-width: 280px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Featured Products",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "🔥 Hot Items",
+      "info": "Title displayed at the top of the section"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Select Collection",
+      "info": "Products from this collection will be displayed. If no collection is selected or it has fewer products than specified, individual products below will be used as fallback."
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Number of Products to Show",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "View All Products Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_link",
+      "label": "Show \"Shop All Products\" button",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "collection_link_url",
+      "label": "\"Shop All Products\" Link",
+      "default": "/collections/all",
+      "info": "URL for the \"Shop All Products\" button"
+    },
+    {
+      "type": "text",
+      "id": "collection_link_text",
+      "label": "\"Shop All Products\" Button Text",
+      "default": "Shop All Products",
+      "info": "Text for the \"Shop All Products\" button"
+    },
+    {
+      "type": "header",
+      "content": "Individual Products (Fallback/Override)",
+      "info": "Use these settings if no collection is selected, or to override specific products. Products will be displayed in order."
+    },
+    {
+      "type": "header",
+      "content": "Product 1"
+    },
+    {
+      "type": "url",
+      "id": "product_url_1",
+      "label": "Product URL",
+      "default": "/products/best-foam-cannon"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image_1",
+      "label": "Product Image"
+    },
+    {
+      "type": "text",
+      "id": "product_name_1",
+      "label": "Product Name",
+      "default": "APEX Foam Cannon"
+    },
+    {
+      "type": "text",
+      "id": "product_price_1",
+      "label": "Product Price",
+      "default": "$49.99"
+    },
+    {
+      "type": "header",
+      "content": "Product 2"
+    },
+    {
+      "type": "url",
+      "id": "product_url_2",
+      "label": "Product URL",
+      "default": "/products/tds-bundle-pro"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image_2",
+      "label": "Product Image"
+    },
+    {
+      "type": "text",
+      "id": "product_name_2",
+      "label": "Product Name",
+      "default": "TDS Bundle Pro"
+    },
+    {
+      "type": "text",
+      "id": "product_price_2",
+      "label": "Product Price",
+      "default": "$129.99"
+    },
+    {
+      "type": "header",
+      "content": "Product 3"
+    },
+    {
+      "type": "url",
+      "id": "product_url_3",
+      "label": "Product URL",
+      "default": "/products/that-detail-towel-purple-1600-gsm-twisted-loop-microfiber-towel"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image_3",
+      "label": "Product Image"
+    },
+    {
+      "type": "text",
+      "id": "product_name_3",
+      "label": "Product Name",
+      "default": "That Detail Towel"
+    },
+    {
+      "type": "text",
+      "id": "product_price_3",
+      "label": "Product Price",
+      "default": "$24.99"
+    },
+    {
+      "type": "header",
+      "content": "Product 4"
+    },
+    {
+      "type": "url",
+      "id": "product_url_4",
+      "label": "Product URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image_4",
+      "label": "Product Image"
+    },
+    {
+      "type": "text",
+      "id": "product_name_4",
+      "label": "Product Name"
+    },
+    {
+      "type": "text",
+      "id": "product_price_4",
+      "label": "Product Price"
+    },
+    {
+      "type": "header",
+      "content": "Product 5"
+    },
+    {
+      "type": "url",
+      "id": "product_url_5",
+      "label": "Product URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image_5",
+      "label": "Product Image"
+    },
+    {
+      "type": "text",
+      "id": "product_name_5",
+      "label": "Product Name"
+    },
+    {
+      "type": "text",
+      "id": "product_price_5",
+      "label": "Product Price"
+    },
+    {
+      "type": "header",
+      "content": "Product 6"
+    },
+    {
+      "type": "url",
+      "id": "product_url_6",
+      "label": "Product URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image_6",
+      "label": "Product Image"
+    },
+    {
+      "type": "text",
+      "id": "product_name_6",
+      "label": "Product Name"
+    },
+    {
+      "type": "text",
+      "id": "product_price_6",
+      "label": "Product Price"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products"
+    }
+  ]
+}
+{% endschema %}
+

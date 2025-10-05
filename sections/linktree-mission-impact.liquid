@@ -1,0 +1,248 @@
+{% comment %}
+  Mission & Impact Section
+  Section: linktree-mission-impact.liquid
+  
+  Online Store 2.0 compatible section with customizable settings
+{% endcomment %}
+
+<div class="linktree-section mission-impact-section" data-section-id="{{ section.id }}" data-section="mission-impact">
+  <div class="linktree-container">
+    <button class="section-header" onclick="toggleSection(\'mission-impact\')">
+      <span class="section-title">
+        <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+        {{ section.settings.section_title }}
+      </span>
+      <svg class="section-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    
+    <div class="section-content">
+      <p class="mission-description">{{ section.settings.description }}</p>
+      
+      {% if section.settings.donate_button_url != blank %}
+        <a href="{{ section.settings.donate_button_url }}" 
+           class="donate-btn"
+           onclick="trackLinkClick(\'Donate Now - {{ section.settings.charity_name | escape }}\' , this.href, \'mission_impact\')"
+           target="_blank"
+           rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
+            <path d="M12 12v6"/>
+            <path d="M15 15l-3 3-3-3"/>
+          </svg>
+          {{ section.settings.donate_button_text | default: \'Donate Now\' }}
+        </a>
+      {% endif %}
+
+      {% if section.settings.show_progress_bar %}
+        <div class="donation-tracker">
+          <div class="progress-bar-wrapper">
+            <div class="progress-bar" style="width: {{ section.settings.current_amount | divided_by: section.settings.goal_amount | times: 100 | round: 0 }}%;"></div>
+          </div>
+          <p class="progress-text">Raised: {{ section.settings.current_amount | money_without_currency }} / Goal: {{ section.settings.goal_amount | money_without_currency }}</p>
+        </div>
+      {% endif %}
+
+      {% if section.settings.story_link_url != blank %}
+        <a href="{{ section.settings.story_link_url }}" 
+           class="story-link"
+           onclick="trackLinkClick(\'Read Our Story - {{ section.settings.charity_name | escape }}\' , this.href, \'mission_impact\')"
+           target="_blank"
+           rel="noopener">
+          {{ section.settings.story_link_text | default: \'Read Our Story\' }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .mission-impact-section .mission-description {
+    font-size: 0.95rem;
+    color: var(--text-gray-300);
+    line-height: 1.5;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .mission-impact-section .donate-btn {
+    background: var(--accent-red);
+    border: 1px solid var(--accent-red);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin: 0 auto 1.5rem auto;
+    max-width: 300px;
+  }
+  
+  .mission-impact-section .donate-btn:hover {
+    background: var(--accent-red-hover);
+    border-color: var(--accent-red-hover);
+    transform: translateY(-2px);
+  }
+  
+  .mission-impact-section .donate-btn svg {
+    flex-shrink: 0;
+    color: #fff;
+  }
+  
+  .mission-impact-section .donation-tracker {
+    margin-top: 1rem;
+    text-align: center;
+  }
+  
+  .mission-impact-section .progress-bar-wrapper {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    height: 10px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .mission-impact-section .progress-bar {
+    background: var(--accent-green);
+    height: 100%;
+    border-radius: 0.5rem;
+    transition: width 0.5s ease-in-out;
+  }
+  
+  .mission-impact-section .progress-text {
+    font-size: 0.85rem;
+    color: var(--text-gray-300);
+  }
+  
+  .mission-impact-section .story-link {
+    display: block;
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+  
+  .mission-impact-section .story-link:hover {
+    color: var(--accent-blue-hover);
+  }
+  
+  /* Tablet and Desktop Adjustments */
+  @media screen and (min-width: 768px) {
+    .mission-impact-section .mission-description {
+      font-size: 1.1rem;
+    }
+    
+    .mission-impact-section .donate-btn {
+      font-size: 1.1rem;
+      padding: 1rem 2rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Mission & Impact",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "❤️ Support a Cause",
+      "info": "Title displayed at the top of the section"
+    },
+    {
+      "type": "text",
+      "id": "charity_name",
+      "label": "Charity Name",
+      "default": "Happiness Bag Inc."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Short Description",
+      "default": "Happiness Bag Inc. provides recreational and educational services to individuals with disabilities in the Wabash Valley.",
+      "info": "A short description of the charity or cause"
+    },
+    {
+      "type": "header",
+      "content": "Donation Button"
+    },
+    {
+      "type": "url",
+      "id": "donate_button_url",
+      "label": "Donate Now Button URL",
+      "info": "Link to the donation page"
+    },
+    {
+      "type": "text",
+      "id": "donate_button_text",
+      "label": "Donate Button Text",
+      "default": "Donate Now"
+    },
+    {
+      "type": "header",
+      "content": "Donation Tracker (Optional)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_progress_bar",
+      "label": "Show Donation Progress Bar",
+      "default": false
+    },
+    {
+      "type": "number",
+      "id": "current_amount",
+      "label": "Current Amount Raised",
+      "default": 0,
+      "min": 0
+    },
+    {
+      "type": "number",
+      "id": "goal_amount",
+      "label": "Goal Amount",
+      "default": 1000,
+      "min": 1
+    },
+    {
+      "type": "header",
+      "content": "Story Link (Optional)"
+    },
+    {
+      "type": "url",
+      "id": "story_link_url",
+      "label": "Story Link URL",
+      "info": "Link to a page with more information about the cause"
+    },
+    {
+      "type": "text",
+      "id": "story_link_text",
+      "label": "Story Link Text",
+      "default": "Learn More About Happiness Bag Inc."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mission & Impact"
+    }
+  ]
+}
+{% endschema %}
+

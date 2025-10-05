@@ -1,0 +1,235 @@
+{% comment %}
+  Reviews Section
+  Section: linktree-reviews.liquid
+  
+  Online Store 2.0 compatible section with customizable settings
+{% endcomment %}
+
+<div class="linktree-section reviews-section" data-section-id="{{ section.id }}" data-section="reviews">
+  <div class="linktree-container">
+    <button class="section-header" onclick="toggleSection(\'reviews\')">
+      <span class="section-title">
+        <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        {{ section.settings.section_title }}
+      </span>
+      <svg class="section-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    
+    <div class="section-content">
+      <div class="reviews-carousel">
+        {% for block in section.blocks %}
+          <div class="review-card">
+            <div class="review-header">
+              <span class="reviewer-name">{{ block.settings.reviewer_name }}</span>
+              <div class="star-rating">
+                {% for i in (1..5) %}
+                  {% if i <= block.settings.rating %}
+                    <svg class="star filled" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                  {% else %}
+                    <svg class="star empty" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+            <p class="review-text">{{ block.settings.review_text }}</p>
+            {% if block.settings.review_source_url != blank %}
+              <a href="{{ block.settings.review_source_url }}" 
+                 class="review-source-link"
+                 onclick="trackLinkClick(\'Review Source - {{ block.settings.reviewer_name | escape }}\' , this.href, \'reviews\')"
+                 target="_blank"
+                 rel="noopener">
+                Read More
+              </a>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .reviews-section .reviews-carousel {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scroll-snap-type: x mandatory;
+  }
+  
+  .reviews-section .review-card {
+    flex: 0 0 auto;
+    width: 280px; /* Fixed width for mobile carousel items */
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    scroll-snap-align: start;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+  
+  .reviews-section .review-card:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-2px);
+  }
+  
+  .reviews-section .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  
+  .reviews-section .reviewer-name {
+    font-weight: 700;
+    color: var(--text-white);
+    font-size: 1rem;
+  }
+  
+  .reviews-section .star-rating {
+    display: flex;
+    gap: 0.2rem;
+  }
+  
+  .reviews-section .star {
+    width: 16px;
+    height: 16px;
+    color: var(--accent-yellow);
+  }
+  
+  .reviews-section .star.empty {
+    color: var(--text-gray-600);
+  }
+  
+  .reviews-section .review-text {
+    font-size: 0.9rem;
+    color: var(--text-gray-300);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+  
+  .reviews-section .review-source-link {
+    font-size: 0.85rem;
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+  
+  .reviews-section .review-source-link:hover {
+    color: var(--accent-blue-hover);
+  }
+  
+  /* Tablet and Desktop Adjustments */
+  @media screen and (min-width: 768px) {
+    .reviews-section .reviews-carousel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      overflow-x: visible;
+      scroll-snap-type: none;
+      justify-items: center;
+    }
+    
+    .reviews-section .review-card {
+      width: 100%;
+      max-width: 350px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Customer Reviews",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "⭐ What Our Customers Say",
+      "info": "Title displayed at the top of the section"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "reviewer_name",
+          "label": "Reviewer Name",
+          "default": "John D."
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Rating (1-5 Stars)",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "review_text",
+          "label": "Review Text",
+          "default": "Absolutely love the products from That Detail Shop! My car has never looked better. Highly recommend ThatDtailGuy for all your detailing needs."
+        },
+        {
+          "type": "url",
+          "id": "review_source_url",
+          "label": "Review Source URL (Optional)",
+          "info": "Link to the original review (e.g., Google Reviews, product page)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customer Reviews",
+      "blocks": [
+        {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Google Reviewer",
+            "rating": 5,
+            "review_text": "That Detail Shop is my go-to for all detailing supplies. Quality products and excellent service!"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Shopify Customer",
+            "rating": 5,
+            "review_text": "The APEX Foam Cannon is a game-changer. Easy to use and delivers amazing results. Highly recommend!"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Local Enthusiast",
+            "rating": 4,
+            "review_text": "Great selection of products and the team is always helpful. My car always shines after using their towels."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
