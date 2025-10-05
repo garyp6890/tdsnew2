@@ -1,0 +1,141 @@
+{% liquid
+  if content_align == nil
+      assign content_align = settings.article_align_content
+  endif
+  if article_show_date == nil
+      assign article_show_date = settings.article_show_date
+  endif
+  if article_show_tags == nil
+      assign article_show_tags = settings.article_show_tags
+  endif
+  if article_show_excerpt == nil
+      assign article_show_excerpt = settings.article_show_excerpt
+  endif
+  if article_show_button == nil
+      assign article_show_button = settings.article_show_button
+  endif
+
+  if article.excerpt != blank
+    assign article_excerpt = article.excerpt
+  else
+    assign article_excerpt = article.content
+  endif
+%}
+{% capture date %}{{ article.published_at | time_tag: format: 'month_day_year' }}{% endcapture %}
+<div 
+  class="m-article-card m-article-card--view-{{ view }}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}"
+  {% if animated %}
+    data-cascade
+    style="--animation-order: {{ index }};"
+  {% endif %}
+>
+    {% if article.image != blank %}
+    <a class="m-article-card__image" href="{{ article.url }}">
+      {% render 'responsive-image', image: article.image, aspect_ratio: settings.article_image_aspect_ratio %}
+    </a>
+    {% endif %}
+    <div class="m-article-card__content m:{{ content_align }}">
+        {%- if article.tags.size > 0 and article_show_tags -%}
+            <span class="m-article-card__tags m:text-color-body">{%- for tag in article.tags limit: 1 -%}{{ tag }}{%- endfor -%}</span>
+        {%- endif -%}
+        {%- if article_show_date -%}
+          
+        {%- endif -%}
+        <h3 class="m-article-card__title"><a href="{{ article.url }}">{{ article.title }}</a></h3>
+        {%- if article_show_excerpt and article_excerpt != blank -%}
+            <div class="m-article-card__excerpt m:hidden md:m:block">
+              {{ article_excerpt | strip_html | truncatewords: 15, '...' }}
+            </div>
+        {%- endif -%}
+        {%- if article_show_button -%}
+            <a class="m-article-card__readmore m-button m-button--link" href="{{ article.url }}">{{ 'blogs.article.read_more' | t }}</a>
+        {%- endif -%}
+
+         <div class="author-card">
+        <div class="author-avatar">
+            <img src="https://cdn.shopify.com/s/files/1/0912/7008/6934/files/businessman.png?v=1742534979" alt="Author Avatar">
+        </div>
+        <div class="author-details">
+            <div class="name">  {{ article.author }} </div>
+            <div class="date">{{ date }}</div>
+        </div>
+    </div>
+
+    </div>
+</div>
+
+
+    <style>
+     
+        .author-card {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+           
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #f4c8e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .author-avatar img {
+            width: 35px;
+            height: 35px;
+        }
+
+        .author-details {
+            font-size: 16px;
+        }
+
+        .author-details .name {
+            font-weight: bold;
+            font-size: 17px;
+            color: #333;
+        }
+
+        .author-details .date {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .author-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #f4c8e6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+    overflow: hidden;
+}
+
+
+.author-avatar img {
+    width: 50px;
+    height: 50px;
+    margin-top: 7px;
+}
+
+
+.date {
+    margin-top: 4px;
+}   
+    .author-card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    padding-left: 0px;
+}
+    </style>
